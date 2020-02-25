@@ -1,2 +1,2 @@
 # ranqing.github.io
-homepage repo of ranqing
+Ranqing's Homepage Repo.
