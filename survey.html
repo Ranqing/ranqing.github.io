@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成类Agent开发 - 人才招募调查问卷</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-item,
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-item:hover,
+        .checkbox-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .radio-item input,
+        .checkbox-item input {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .radio-item.selected,
+        .checkbox-item.selected {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+
+        .skill-level {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .skill-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .skill-item:hover {
+            border-color: #667eea;
+        }
+
+        .skill-name {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .skill-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .skill-options label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: normal;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 5px 10px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .skill-options input {
+            accent-color: #667eea;
+        }
+
+        .project-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .project-title {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .btn-add {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            background: #5a6fd6;
+            transform: translateY(-2px);
+        }
+
+        .btn-remove {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-remove:hover {
+            background: #c0392b;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .hint {
+            font-size: 13px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .success-message h2 {
+            color: #27ae60;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .success-message p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 25px;
+            }
+            
+            .skill-level {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 生成类Agent开发 - 人才招募</h1>
+            <p>寻找有激情、有能力的同学一起打造智能Agent系统</p>
+        </div>
+
+        <div class="form-container" id="surveyForm">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <!-- 基本信息 -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">👤</span>
+                    基本信息
+                </h2>
+                
+                <div class="form-group">
+                    <label class="required">姓名</label>
+                    <input type="text" name="name" placeholder="请输入你的姓名" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">学校</label>
+                    <input type="text" name="school" placeholder="请输入你的学校名称" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">专业/年级</label>
+                    <input type="text" name="major" placeholder="例如：计算机科学 / 大三" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">联系电话</label>
+                    <input type="tel" name="phone" placeholder="请输入手机号码" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">邮箱</label>
+                    <input type="email" name="email" placeholder="请输入邮箱地址" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">每周可投入时间</label>
+                    <select name="time_commitment" required>
+                        <option value="">请选择</option>
+                        <option value="10h以下">10小时以下</option>
+                        <option value="10-20h">10-20小时</option>
+                        <option value="20-30h">20-30小时</option>
+                        <option value="30h以上">30小时以上</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 编程基础 -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">💻</span>
+                    编程基础
+                </h2>
+
+                <div class="form-group">
+                    <label class="required">主要编程语言（可多选）</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="languages" value="Python">
+                            <span>Python</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="languages" value="JavaScript/TypeScript">
+                            <span>JavaScript / TypeScript</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="languages" value="Java">
+                            <span>Java</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="languages" value="C++">
+                            <span>C / C++</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="languages" value="Go">
+                            <span>Go</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="languages" value="其他">
+                            <span>其他</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">编程经验</label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="coding_exp" value="1年以下">
+                            <span>1年以下</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="coding_exp" value="1-2年">
+                            <span>1-2年</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="coding_exp" value="2-3年">
+                            <span>2-3年</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="coding_exp" value="3年以上">
+                            <span>3年以上</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>GitHub/GitLab 主页链接（选填）</label>
+                    <input type="text" name="github" placeholder="https://github.com/username">
+                    <p class="hint">有代码仓库可以加分哦</p>
+                </div>
+            </div>
+
+            <!-- AI/ML 技能 -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">🧠</span>
+                    AI / 大模型相关技能
+                </h2>
+
+                <div class="form-group">
+                    <label>对以下技术的熟悉程度</label>
+                    <div class="skill-level">
+                        <div class="skill-item">
+                            <div class="skill-name">OpenAI API / GPT 系列</div>
+                            <div class="skill-options">
+                                <label><input type="radio" name="skill_openai" value="0"> 未接触</label>
+                                <label><input type="radio" name="skill_openai" value="1"> 了解</label>
+                                <label><input type="radio" name="skill_openai" value="2"> 使用过</label>
+                                <label><input type="radio" name="skill_openai" value="3"> 熟练</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-name">LangChain / LlamaIndex</div>
+                            <div class="skill-options">
+                                <label><input type="radio" name="skill_langchain" value="0"> 未接触</label>
+                                <label><input type="radio" name="skill_langchain" value="1"> 了解</label>
+                                <label><input type="radio" name="skill_langchain" value="2"> 使用过</label>
+                                <label><input type="radio" name="skill_langchain" value="3"> 熟练</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-name">多模态模型 (VLM)</div>
+                            <div class="skill-options">
+                                <label><input type="radio" name="skill_vlm" value="0"> 未接触</label>
+                                <label><input type="radio" name="skill_vlm" value="1"> 了解</label>
+                                <label><input type="radio" name="skill_vlm" value="2"> 使用过</label>
+                                <label><input type="radio" name="skill_vlm" value="3"> 熟练</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-name">Prompt Engineering</div>
+                            <div class="skill-options">
+                                <label><input type="radio" name="skill_prompt" value="0"> 未接触</label>
+                                <label><input type="radio" name="skill_prompt" value="1"> 了解</label>
+                                <label><input type="radio" name="skill_prompt" value="2"> 使用过</label>
+                                <label><input type="radio" name="skill_prompt" value="3"> 熟练</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-name">RAG / 向量数据库</div>
+                            <div class="skill-options">
+                                <label><input type="radio" name="skill_rag" value="0"> 未接触</label>
+                                <label><input type="radio" name="skill_rag" value="1"> 了解</label>
+                                <label><input type="radio" name="skill_rag" value="2"> 使用过</label>
+                                <label><input type="radio" name="skill_rag" value="3"> 熟练</label>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-name">模型微调 (Fine-tuning)</div>
+                            <div class="skill-options">
+                                <label><input type="radio" name="skill_finetune" value="0"> 未接触</label>
+                                <label><input type="radio" name="skill_finetune" value="1"> 了解</label>
+                                <label><input type="radio" name="skill_finetune" value="2"> 使用过</label>
+                                <label><input type="radio" name="skill_finetune" value="3"> 熟练</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>是否有过Agent开发经验？</label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="agent_exp" value="无经验">
+                            <span>无相关经验</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="agent_exp" value="学习阶段">
+                            <span>学习/课程项目阶段</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="agent_exp" value="实际项目">
+                            <span>参与过实际项目</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="agent_exp" value="独立开发">
+                            <span>独立开发过Agent应用</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 项目相关技能 -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">🛠️</span>
+                    项目相关技能
+                </h2>
+
+                <div class="form-group">
+                    <label>图像处理相关经验</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="image_skills" value="OpenCV">
+                            <span>OpenCV / PIL 图像处理</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="image_skills" value="OCR">
+                            <span>OCR 文字识别</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="image_skills" value="ObjectDetection">
+                            <span>目标检测 (YOLO等)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="image_skills" value="ImageGeneration">
+                            <span>图像生成 (Stable Diffusion等)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="image_skills" value="None">
+                            <span>暂无相关经验</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>后端/云服务经验</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="backend_skills" value="FastAPI">
+                            <span>FastAPI / Flask</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="radio" name="backend_skills" value="OSS">
+                            <span>对象存储 (OSS/S3/MinIO)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="backend_skills" value="Docker">
+                            <span>Docker / 容器化</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="backend_skills" value="Database">
+                            <span>数据库 (MySQL/MongoDB/Redis)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="backend_skills" value="None">
+                            <span>暂无相关经验</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>前端开发经验</label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="frontend_exp" value="无经验">
+                            <span>无经验</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="frontend_exp" value="基础">
+                            <span>基础 (HTML/CSS/JS)</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="frontend_exp" value="React/Vue">
+                            <span>React / Vue 框架</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="frontend_exp" value="全栈">
+                            <span>全栈开发经验</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 项目经历 -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">📂</span>
+                    项目经历
+                </h2>
+
+                <div id="projectsContainer">
+                    <div class="project-item">
+                        <div class="project-header">
+                            <span class="project-title">项目 1</span>
+                        </div>
+                        <div class="form-group">
+                            <label>项目名称</label>
+                            <input type="text" name="project_name[]" placeholder="项目名称">
+                        </div>
+                        <div class="form-group">
+                            <label>项目描述</label>
+                            <textarea name="project_desc[]" placeholder="简要描述项目内容、你的职责和技术栈"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>项目链接（选填）</label>
+                            <input type="text" name="project_link[]" placeholder="GitHub 或其他展示链接">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-add" onclick="addProject()">+ 添加更多项目</button>
+            </div>
+
+            <!-- 其他信息 -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">💡</span>
+                    其他信息
+                </h2>
+
+                <div class="form-group">
+                    <label class="required">对Agent技术的兴趣程度</label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="interest" value="一般" required>
+                            <span>一般，想了解一下</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="interest" value="比较感兴趣">
+                            <span>比较感兴趣，有相关学习</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="interest" value="非常感兴趣">
+                            <span>非常感兴趣，有明确的学习计划</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="interest" value="极度热爱">
+                            <span>极度热爱，已经投入大量时间学习实践</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">希望从项目中获得什么？</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="goals" value="技术提升">
+                            <span>技术能力提升</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="goals" value="项目经验">
+                            <span>实际项目经验</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="goals" value="作品集">
+                            <span>完善个人作品集</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="goals" value="人脉">
+                            <span>拓展技术人脉</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="goals" value="就业机会">
+                            <span>潜在的实习/就业机会</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="goals" value="其他">
+                            <span>其他</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>自我介绍 / 为什么想加入（选填）</label>
+                    <textarea name="self_intro" placeholder="简单介绍一下自己，以及为什么对这个项目感兴趣..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>还有什么想问我们的？（选填）</label>
+                    <textarea name="questions" placeholder="对项目、技术栈、工作方式等方面的疑问"></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">提交申请</button>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <div class="success-icon">🎉</div>
+            <h2>提交成功！</h2>
+            <p>感谢你的申请，我们会尽快审核并与你联系。<br>请保持手机畅通，期待与你的合作！</p>
+        </div>
+    </div>
+
+    <script>
+        // 进度条更新
+        function updateProgress() {
+            const form = document.getElementById('surveyForm');
+            const inputs = form.querySelectorAll('input[required], select[required]');
+            let filled = 0;
+            let total = 0;
+
+            inputs.forEach(input => {
+                if (input.type === 'radio') {
+                    const name = input.name;
+                    const radios = form.querySelectorAll(`input[name="${name}"]`);
+                    if (!radios[0].dataset.counted) {
+                        total++;
+                        radios[0].dataset.counted = 'true';
+                        if (Array.from(radios).some(r => r.checked)) {
+                            filled++;
+                        }
+                    }
+                } else if (input.type === 'checkbox') {
+                    // 跳过checkbox的required检查
+                } else {
+                    total++;
+                    if (input.value.trim()) {
+                        filled++;
+                    }
+                }
+            });
+
+            const progress = total > 0 ? (filled / total) * 100 : 0;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // 监听所有输入变化
+        document.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('change', updateProgress);
+            input.addEventListener('input', updateProgress);
+        });
+
+        // 单选/多选样式切换
+        document.querySelectorAll('.radio-item input').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const name = this.name;
+                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                    r.closest('.radio-item').classList.remove('selected');
+                });
+                this.closest('.radio-item').classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('.checkbox-item input').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                this.closest('.checkbox-item').classList.toggle('selected', this.checked);
+            });
+        });
+
+        // 添加项目
+        let projectCount = 1;
+        function addProject() {
+            projectCount++;
+            const container = document.getElementById('projectsContainer');
+            const projectDiv = document.createElement('div');
+            projectDiv.className = 'project-item';
+            projectDiv.innerHTML = `
+                <div class="project-header">
+                    <span class="project-title">项目 ${projectCount}</span>
+                    <button type="button" class="btn-remove" onclick="removeProject(this)">删除</button>
+                </div>
+                <div class="form-group">
+                    <label>项目名称</label>
+                    <input type="text" name="project_name[]" placeholder="项目名称">
+                </div>
+                <div class="form-group">
+                    <label>项目描述</label>
+                    <textarea name="project_desc[]" placeholder="简要描述项目内容、你的职责和技术栈"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>项目链接（选填）</label>
+                    <input type="text" name="project_link[]" placeholder="GitHub 或其他展示链接">
+                </div>
+            `;
+            container.appendChild(projectDiv);
+        }
+
+        // 删除项目
+        function removeProject(btn) {
+            btn.closest('.project-item').remove();
+            // 重新编号
+            document.querySelectorAll('.project-item').forEach((item, index) => {
+                item.querySelector('.project-title').textContent = `项目 ${index + 1}`;
+            });
+            projectCount = document.querySelectorAll('.project-item').length;
+        }
+
+        // 表单提交
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 收集表单数据
+            const formData = new FormData(this);
+            const data = {};
+            
+            // 处理普通字段
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    if (!Array.isArray(data[key])) {
+                        data[key] = [data[key]];
+                    }
+                    data[key].push(value);
+                } else {
+                    data[key] = value;
+                }
+            }
+
+            // 处理多选框
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                const name = checkbox.name;
+                const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
+                if (checked.length > 0) {
+                    data[name] = Array.from(checked).map(c => c.value);
+                }
+            });
+
+            console.log('提交的数据:', data);
+            
+            // 使用 mailto 方式提交数据
+            const subject = encodeURIComponent('Agent招募 - 申请表单');
+            let body = '';
+            body += '=== 基本信息 ===\n';
+            body += `姓名: ${data.name}\n`;
+            body += `学校: ${data.school}\n`;
+            body += `专业/年级: ${data.major}\n`;
+            body += `联系电话: ${data.phone}\n`;
+            body += `邮箱: ${data.email}\n`;
+            body += `每周可投入时间: ${data.time_commitment}\n\n`;
+            
+            body += '=== 编程基础 ===\n';
+            body += `主要编程语言: ${Array.isArray(data.languages) ? data.languages.join(', ') : data.languages || '未选择'}\n`;
+            body += `编程经验: ${data.coding_exp || '未填写'}\n`;
+            body += `GitHub: ${data.github || '未提供'}\n\n`;
+            
+            body += '=== AI/ML 技能 ===\n';
+            body += `OpenAI API: ${data.skill_openai || '未评估'}\n`;
+            body += `LangChain: ${data.skill_langchain || '未评估'}\n`;
+            body += `多模态模型: ${data.skill_vlm || '未评估'}\n`;
+            body += `Prompt Engineering: ${data.skill_prompt || '未评估'}\n`;
+            body += `RAG/向量数据库: ${data.skill_rag || '未评估'}\n`;
+            body += `模型微调: ${data.skill_finetune || '未评估'}\n`;
+            body += `Agent开发经验: ${data.agent_exp || '未填写'}\n\n`;
+            
+            body += '=== 项目相关技能 ===\n';
+            body += `图像处理: ${Array.isArray(data.image_skills) ? data.image_skills.join(', ') : data.image_skills || '未选择'}\n`;
+            body += `后端/云服务: ${Array.isArray(data.backend_skills) ? data.backend_skills.join(', ') : data.backend_skills || '未选择'}\n`;
+            body += `前端开发: ${data.frontend_exp || '未填写'}\n\n`;
+            
+            body += '=== 其他信息 ===\n';
+            body += `兴趣程度: ${data.interest || '未填写'}\n`;
+            body += `期望收获: ${Array.isArray(data.goals) ? data.goals.join(', ') : data.goals || '未选择'}\n`;
+            body += `自我介绍: ${data.self_intro || '未填写'}\n`;
+            body += `问题: ${data.questions || '未填写'}\n`;
+            
+            const mailtoLink = `mailto:your-email@example.com?subject=${subject}&body=${encodeURIComponent(body)}`;
+            
+            // 尝试打开邮件客户端
+            window.location.href = mailtoLink;
+            
+            // 同时显示成功消息
+            setTimeout(() => {
+                document.getElementById('surveyForm').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 500);
+        });
+
+        // 初始化进度条
+        updateProgress();
+    </script>
+</body>
+</html>
